@@ -1,16 +1,12 @@
 package com.example.flowglobalassignment.ip.application.dto.request;
 
 import com.example.flowglobalassignment.ip.domain.IpRule;
-import com.example.flowglobalassignment.ip.util.CustomLocalDateTimeDeserializer;
-import com.example.flowglobalassignment.ip.util.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
