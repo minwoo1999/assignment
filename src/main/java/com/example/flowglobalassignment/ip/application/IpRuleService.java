@@ -14,4 +14,6 @@ public interface IpRuleService {
     boolean deleteIpRole(Long IpRoleId);
 
     Page<IpRuleListResponseDto> readIpRole(IpRuleSearchCondition ipRuleSearchCondition, Pageable pageable);
+
+    Integer  getIpRoleCount(String ipAddress);
 }
