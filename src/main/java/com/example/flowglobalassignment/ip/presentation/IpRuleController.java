@@ -43,5 +43,10 @@ public class IpRuleController {
         String clientIp = IpUtils.getClientIp();
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1,"사용자의 IP조회에 성공하였습니다.",clientIp));
     }
+    @GetMapping("/ip-roles/count")
+    public ResponseEntity<CommonResDto<?>> getIpRoleCount(@RequestParam("ipAddress") String ipAddress){
+        Integer result = ipRuleService.getIpRoleCount(ipAddress);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1,"사용자의 IP규칙개수 조회에 성공하였습니다.",result));
+    }
 
 }

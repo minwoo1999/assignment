@@ -11,7 +11,6 @@ import com.example.flowglobalassignment.ip.domain.repository.IpRuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +68,11 @@ public class IpRuleServiceImpl implements IpRuleService {
 
         return new PageImpl<>(dtoList, ipRules.getPageable(), ipRules.getTotalElements());
 
+    }
+
+    @Override
+    public Integer getIpRoleCount(String ipAddress) {
+        List<IpRule> ipRuleList = ipRuleRepository.findAllByIpAddress(ipAddress);
+        return ipRuleList.size();
     }
 }
