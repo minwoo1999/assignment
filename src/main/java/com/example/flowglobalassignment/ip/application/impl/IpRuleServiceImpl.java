@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,14 +62,11 @@ public class IpRuleServiceImpl implements IpRuleService {
     }
 
     @Override
-    public Page<IpRuleListResponseDto> readIpRole(IpRuleSearchCondition ipRuleSearchCondition, Pageable pageable) {
-        Page<IpRule> ipRules = ipRuleRepository.readIpRuleList(pageable, ipRuleSearchCondition);
-        List<IpRuleListResponseDto> dtoList = ipRules.stream()
-                .map(board -> new IpRuleListResponseDto(board))
-                .collect(Collectors.toList());
+    public Slice<IpRuleListResponseDto> readIpRole(IpRuleSearchCondition ipRuleSearchCondition, Pageable pageable) {
+        Slice<IpRuleListResponseDto> ipRuleListResponseDtos = ipRuleRepository.readIpRuleList(pageable, ipRuleSearchCondition);
 
-        return new PageImpl<>(dtoList, ipRules.getPageable(), ipRules.getTotalElements());
 
+        return ipRuleListResponseDtos;
     }
 
     @Override
