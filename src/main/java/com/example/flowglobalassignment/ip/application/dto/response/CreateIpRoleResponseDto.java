@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 public class CreateIpRoleResponseDto {
-    private String ip;
+
+    private Long id;
+    private String ipAddress;
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

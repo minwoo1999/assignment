@@ -10,17 +10,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 public class IpRuleListResponseDto {
-    private Long ip;
+    private Long id;
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
+    private String ipAddress;
 
     public IpRuleListResponseDto(IpRule ipRule) {
-        this.ip = ipRule.getId();
+        this.id = ipRule.getId();
         this.description = ipRule.getDescription();
         this.startTime = ipRule.getStartTime();
         this.endTime = ipRule.getEndTime();
         this.createdAt = ipRule.getCreatedAt();
+        this.ipAddress=ipRule.getIpAddress();
     }
 }
