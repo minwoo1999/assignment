@@ -31,7 +31,6 @@ public class IpRuleQuerydslRepositoryImpl implements IpRuleQuerydslRepository {
 
     private final EntityManager entityManager;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
 
 
 
@@ -43,6 +42,7 @@ public class IpRuleQuerydslRepositoryImpl implements IpRuleQuerydslRepository {
                         searchWordExpression(ipRuleSearchCondition.getSearchWord()),
                         timeBetween(ipRuleSearchCondition.getStartTime(), ipRuleSearchCondition.getEndTime())
                 )
+                .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
