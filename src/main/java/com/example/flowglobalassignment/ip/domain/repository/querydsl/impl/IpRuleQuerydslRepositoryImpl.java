@@ -1,6 +1,7 @@
 package com.example.flowglobalassignment.ip.domain.repository.querydsl.impl;
 
 import com.example.flowglobalassignment.ip.application.dto.IpRuleSearchCondition;
+import com.example.flowglobalassignment.ip.application.dto.response.IpRuleListResponseDto;
 import com.example.flowglobalassignment.ip.domain.IpRule;
 import com.example.flowglobalassignment.ip.domain.repository.querydsl.IpRuleQuerydslRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -13,9 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDateTime;
@@ -23,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.flowglobalassignment.ip.domain.QIpRule.*;
 
@@ -36,27 +36,28 @@ public class IpRuleQuerydslRepositoryImpl implements IpRuleQuerydslRepository {
 
 
     @Override
-    public Page<IpRule> readIpRuleList(Pageable pageable, IpRuleSearchCondition ipRuleSearchCondition) {
-        System.out.println(ipRuleSearchCondition.getSearchWord());
-        JPAQuery<IpRule> contentQuery = new JPAQueryFactory(entityManager).
-                selectFrom(ipRule)
+    public Slice<IpRuleListResponseDto> readIpRuleList(Pageable pageable, IpRuleSearchCondition ipRuleSearchCondition) {
+        List<IpRule> ipRuleList = new JPAQueryFactory(entityManager)
+                .selectFrom(ipRule)
                 .where(
                         searchWordExpression(ipRuleSearchCondition.getSearchWord()),
                         timeBetween(ipRuleSearchCondition.getStartTime(), ipRuleSearchCondition.getEndTime())
                 )
-                .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
 
-        JPAQuery<Long> countQuery = new JPAQueryFactory(entityManager)
-                .select(ipRule.count())
-                .from(ipRule)
-                .where(
-                        searchWordExpression(ipRuleSearchCondition.getSearchWord()),
-                        timeBetween(ipRuleSearchCondition.getStartTime(), ipRuleSearchCondition.getEndTime())
-                );
+        boolean hasNext = false;
+        if (ipRuleList.size() > pageable.getPageSize()) {
+            ipRuleList.remove(ipRuleList.size() - 1);
+            hasNext = true;
+        }
 
-        return PageableExecutionUtils.getPage(contentQuery.fetch(),pageable, () -> countQuery.fetch().size());
+        List<IpRuleListResponseDto> content = ipRuleList.stream()
+                .map(ipRule -> new IpRuleListResponseDto(ipRule)) // Assuming you have a constructor or method to map IpRule to IpRuleListResponseDto
+                .collect(Collectors.toList());
+
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     /**

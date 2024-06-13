@@ -11,6 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +37,8 @@ public class IpRuleController {
     }
     @GetMapping("")
     public ResponseEntity<CommonResDto<?>> readIpRole(IpRuleSearchCondition ipRuleSearchCondition,
-                                                      Pageable pageable){
-        Page<IpRuleListResponseDto> result = ipRuleService.readIpRole(ipRuleSearchCondition, pageable);
+                                                      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        Slice<IpRuleListResponseDto> result = ipRuleService.readIpRole(ipRuleSearchCondition, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1,"IP규칙 리스트조회에 성공하였습니다.",result));
     }
     @GetMapping("/my-ip")
