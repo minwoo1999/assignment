@@ -36,7 +36,8 @@ public class IpRuleServiceImpl implements IpRuleService {
         IpRule savedIpRule = ipRuleRepository.save(ipRole);
 
         return CreateIpRoleResponseDto.builder()
-                .ip(savedIpRule.getIpAddress())
+                .id(savedIpRule.getId())
+                .ipAddress(savedIpRule.getIpAddress())
                 .description(savedIpRule.getDescription())
                 .startTime(savedIpRule.getStartTime())
                 .endTime(savedIpRule.getEndTime())
